@@ -23,7 +23,7 @@ import { Card, Button, Modal, ModalHeader,
         }
 
 
-    function RenderComments({comments}) {
+    function RenderComments({comments, addComment, campsiteId}) {
         if (comments) {
             return(
                 <div className="col-md-5 m-1">
@@ -38,7 +38,7 @@ import { Card, Button, Modal, ModalHeader,
                             </div>
                         );
                     })}
-                    <SubmitComment/>
+                    <CommentForm campsiteId={campsiteId} addComment={addComment} />
                 </div>
             );
         }
@@ -52,7 +52,11 @@ import { Card, Button, Modal, ModalHeader,
                     <div className="container">
                         <div className="row">
                             <RenderCampsite campsite={props.campsite} />
-                            <RenderComments comments={props.comments} />                          
+                            <RenderComments 
+                            comments={props.comments} 
+                            addComment={props.addComment}
+                            campsiteId={props.campsite.id}
+                            />                          
                         </div>
                     </div>
                 );
@@ -119,7 +123,29 @@ import { Card, Button, Modal, ModalHeader,
             }
             
 
-   class SubmitComment extends Component {
+   class CommentForm extends Component {
+
+        constructor(props) {
+            super(props);
+            this.state = {
+                isModalOpen: false
+            };
+            this.toggleModal = this.toggleModal.bind(this);
+            this.handleSubmit = this.handleSubmit.bind(this);
+        }
+
+        toggleModal() {
+            this.setState({
+                isModalOpen: !this.state.isModalOpen
+            });
+        }
+
+        handleSubmit(values) {
+            this.toggleModal();
+            this.props.addComment(this.props.campsiteId, values.rating, values.author, values.text);
+           
+        }
+        
        render(){
            return(
                <CommentModal/>
