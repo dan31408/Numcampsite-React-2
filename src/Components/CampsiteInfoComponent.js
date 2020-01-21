@@ -2,7 +2,9 @@ import React, { Component, useState } from 'react';
 import { Card, Button, Modal, ModalHeader,
      ModalBody, ModalFooter, CardImg, CardText, CardBody, CardTitle,
      Form, Label, Input, Col, Row } from 'reactstrap';
-     import { Control, LocalForm, Errors } from 'react-redux-form';
+import { Control, LocalForm, Errors } from 'react-redux-form';
+import { Loading } from './LoadingComponent';
+
 
      const required = val => val && val.length;
      const maxLength = len => val => !val || (val.length <= len);
@@ -47,10 +49,36 @@ import { Card, Button, Modal, ModalHeader,
 
 
         function CampsiteInfo(props) {
+            if (props.isLoading) {
+                return (
+                    <div className="container">
+                        <div className="Row">
+                            <Loading />
+                        </div>
+                    </div>
+                );
+            }
+            if (props.errMess) {
+                return (
+                    <div className="container">
+                        <div className="row">
+                            <div className="col">
+                                <h4>{props.errMess}</h4>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+
             if (props.campsite) {
                 return (
                     <div className="container">
                         <div className="row">
+                            <div className="col">
+                                <Breadcrumb>
+                                    <BreadcrumbItem><Link to="./directory">Directory</Link></BreadcrumbItem>
+                                    <BreadcrumbItem active>{props.campsite.name}</BreadcrumbItem>
+                                </Breadcrumb>
                             <RenderCampsite campsite={props.campsite} />
                             <RenderComments 
                             comments={props.comments} 
@@ -59,6 +87,7 @@ import { Card, Button, Modal, ModalHeader,
                             />                          
                         </div>
                     </div>
+                </div>
                 );
             }
             return <div />;
